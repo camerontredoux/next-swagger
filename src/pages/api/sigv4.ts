@@ -11,8 +11,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const url = new URL(urlString);
 
-  console.log(accessKey, secretKey, url, body);
-
   const options = {
     host: url.host,
     path: url.pathname,
@@ -25,8 +23,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       "Content-Type": "application/json",
     },
   };
-
-  console.log(options);
 
   aws4.sign(options, {
     accessKeyId: accessKey,

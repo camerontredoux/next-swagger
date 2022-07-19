@@ -33,8 +33,6 @@ const Home: NextPage = () => {
       });
 
       const data = await res.json();
-      console.log(data);
-
       return data;
     }
 
@@ -52,8 +50,14 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="auth z-50 font-inter flex px-2 sm:px-0 py-2 bg-white items-center justify-center gap-2 flex-wrap drop-shadow-sm top-0 left-0 right-0 fixed"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <input
+          spellCheck={false}
+          className={`w-full sm:w-1/3 min-w-fit sm:max-w-md text-center px-2 py-2 rounded-md text-sm bg-slate-100 hover:bg-slate-50`}
+          placeholder="Access Key"
           type="text"
           {...register("accessKey", {
             required: "Required",
@@ -64,7 +68,10 @@ const Home: NextPage = () => {
           })}
         />
         <input
+          spellCheck={false}
+          className={`w-full sm:w-1/3 min-w-fit sm:max-w-md text-center px-2 py-2 rounded-md text-sm bg-slate-100 hover:bg-slate-50`}
           type="text"
+          placeholder="Secret Key"
           {...register("secretKey", {
             required: "Required",
             pattern: {
@@ -73,16 +80,32 @@ const Home: NextPage = () => {
             },
           })}
         />
-        <button type="submit">Submit</button>
+        <button
+          className={`${
+            values && !(errors.accessKey || errors.secretKey)
+              ? "bg-[#49cc90] text-white"
+              : "bg-white"
+          }
+          ${
+            errors.accessKey || errors.secretKey
+              ? "active:bg-red-100 active:border-red-200 hover:border-red-200 border-red-100 text-red-400 bg-red-200"
+              : "active:bg-green-200 active:text-white active:border-green-200 hover:border-green-200 border-green-100 text-green-400"
+          }
+          w-full sm:w-fit text-sm px-3 py-2 rounded-md border-2`}
+          type="submit"
+        >
+          {values && !(errors.accessKey || errors.secretKey)
+            ? "Initialized"
+            : "Initialize"}
+        </button>
       </form>
 
-      {errors.accessKey && errors.accessKey.message}
-      {errors.secretKey && errors.secretKey.message}
-
-      <SwaggerUI
-        requestInterceptor={requestInterceptor}
-        url="https://kadets-docs.s3.amazonaws.com/openapi.json"
-      />
+      <div className="mt-44 sm:mt-20">
+        <SwaggerUI
+          requestInterceptor={requestInterceptor}
+          url="https://kadets-docs.s3.amazonaws.com/openapi.json"
+        />
+      </div>
     </>
   );
 };

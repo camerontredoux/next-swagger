@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.auth > *:focus {
+  outline: none !important;
+}
