@@ -1,23 +1,22 @@
 import aws4 from "aws4";
 import { NextApiRequest, NextApiResponse } from "next/types";
 
-// next api handler function
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const {
-    values: { accessKey, secretKey },
-    urlString,
-    body,
-  } = JSON.parse(req.body);
+  const { url, body } = JSON.parse(req.body);
 
-  const url = new URL(urlString);
+  const { host, pathname, href } = new URL(url);
+
+  const keys = req.headers.authorization!.split(" ")[1]!;
+  const plaintext = Buffer.from(keys, "base64").toString();
+  const [accessKeyId, secretAccessKey] = plaintext.split(":");
 
   const options = {
-    host: url.host,
-    path: url.pathname,
+    host: host,
+    path: pathname,
     service: "execute-api",
     region: "us-west-2",
     method: "POST",
-    url: url.href,
+    url: href,
     body: body,
     headers: {
       "Content-Type": "application/json",
@@ -25,8 +24,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   };
 
   aws4.sign(options, {
-    accessKeyId: accessKey,
-    secretAccessKey: secretKey,
+    accessKeyId,
+    secretAccessKey,
   });
 
   res.status(200).json(options);
